@@ -33,5 +33,54 @@ The application is built using ASP.NET Core MVC, and all data is stored in-memor
 - Search and filter events by title, description, category, or date.
 
 - Recommendations generated based on previous searches.
-  
 
+  ### Task 3 - Service Request Feature.
+- Submit service requests (e.g., water issues, streetlights, or sanitation problems).
+  
+- Requests managed using an AVL Tree and Binary Search Tree (BST) for efficient organization and retrieval.
+  
+- Requests can be viewed, searched, and tracked.
+
+## Project Structure 
+
+```html
+/Controllers
+    EventsController.cs
+    HomeController.cs
+    ReportController.cs
+    ServiceRequestController.cs
+
+/DataStructures
+    AVLTree.cs
+    BSTree.cs
+    Graph.cs
+    MinHeap.cs
+
+/Models
+    Event.cs
+    Report.cs
+    ServiceRequest.cs
+
+/Services
+    IDataService.cs
+    MunicipalDataService.cs
+
+/Views
+    /Events
+        CreateEvent.cshtml
+        Dashboard.cshtml
+        Index.cshtml
+    /Home
+        About.cshtml
+        Contact.cshtml
+        Index.cshtml
+        MainMenu.cshtml
+    /Report
+        (Views for submitting and viewing reports)
+    /ServiceRequest
+        ServiceRequestForm.cshtml
+        ViewRequests.cshtml
+    /Shared
+        _ViewImports.cshtml
+        _ViewStart.cshtml
+```
