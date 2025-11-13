@@ -29,7 +29,7 @@ namespace ST10026525.PROG7312.MunicipalPOE.Controllers
             if (!ModelState.IsValid)
                 return View(request);
 
-            request.Id = Guid.NewGuid();
+            request.myId = new Random().Next(1000, 9999);
             request.DateSubmitted = DateTime.Now;
             request.Status ??= "Pending";
 
@@ -44,7 +44,7 @@ namespace ST10026525.PROG7312.MunicipalPOE.Controllers
         {
             var requests = _dataService.GetAllRequests();
 
-            if (!string.IsNullOrEmpty(searchId) && Guid.TryParse(searchId, out Guid id))
+            if (!string.IsNullOrEmpty(searchId) && int.TryParse(searchId, out int id))
             {
                 var match = _dataService.SearchById(id);
                 requests = match != null ? new List<ServiceRequest> { match } : new List<ServiceRequest>();
@@ -70,7 +70,7 @@ namespace ST10026525.PROG7312.MunicipalPOE.Controllers
 
         // Update request status (from dropdown)
         [HttpPost]
-        public IActionResult UpdateStatus(Guid id, string newStatus)
+        public IActionResult UpdateStatus(int id, string newStatus)
         {
             _dataService.UpdateRequestStatus(id, newStatus);
             return RedirectToAction("ViewRequests");

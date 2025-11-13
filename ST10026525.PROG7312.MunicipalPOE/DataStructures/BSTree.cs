@@ -3,69 +3,79 @@ using System.Collections.Generic;
 
 namespace ST10026525.PROG7312.MunicipalPOE.DataStructures
 {
-    public class BSTreeNode<T>
+    // Basic node structure for the BST
+    public class BSTNode<TKey, TValue>
     {
-        public Guid Key { get; set; }
-        public T Value { get; set; }
-        public BSTreeNode<T> Left { get; set; }
-        public BSTreeNode<T> Right { get; set; }
+        public TKey Key { get; set; }
+        public TValue Value { get; set; }
+        public BSTNode<TKey, TValue> Left { get; set; }
+        public BSTNode<TKey, TValue> Right { get; set; }
 
-        public BSTreeNode(Guid key, T value)
+        public BSTNode(TKey key, TValue value)
         {
             Key = key;
             Value = value;
+            Left = null;
+            Right = null;
         }
     }
 
-    public class BSTree<T> where T : class
+    // Simple Binary Search Tree that can store any comparable key-value pair
+    public class BSTree<TKey, TValue> where TKey : IComparable<TKey>
     {
-        private BSTreeNode<T> _root;
+        private BSTNode<TKey, TValue> _root;
 
-        public void Insert(Guid key, T value)
+        // Insert a key-value pair into the tree
+        public void Insert(TKey key, TValue value)
         {
             _root = InsertRec(_root, key, value);
         }
 
-        private BSTreeNode<T> InsertRec(BSTreeNode<T> node, Guid key, T value)
+        private BSTNode<TKey, TValue> InsertRec(BSTNode<TKey, TValue> node, TKey key, TValue value)
         {
             if (node == null)
-                return new BSTreeNode<T>(key, value);
+                return new BSTNode<TKey, TValue>(key, value);
 
-            if (key.CompareTo(node.Key) < 0)
+            int compare = key.CompareTo(node.Key);
+
+            if (compare < 0)
                 node.Left = InsertRec(node.Left, key, value);
-            else if (key.CompareTo(node.Key) > 0)
+            else if (compare > 0)
                 node.Right = InsertRec(node.Right, key, value);
-            // If key already exists, overwrite
             else
-                node.Value = value;
+                node.Value = value; // Overwrite if key exists
 
             return node;
         }
 
-        public T Search(Guid key)
+        // Search by key
+        public TValue Search(TKey key)
         {
             var node = _root;
             while (node != null)
             {
-                if (key.CompareTo(node.Key) == 0) return node.Value;
-                node = key.CompareTo(node.Key) < 0 ? node.Left : node.Right;
+                int compare = key.CompareTo(node.Key);
+                if (compare == 0)
+                    return node.Value;
+                node = compare < 0 ? node.Left : node.Right;
             }
-            return null;
+            return default;
         }
 
-        public List<T> InOrderTraversal()
+        // Traverse the tree in order (sorted)
+        public List<TValue> InOrderTraversal()
         {
-            var list = new List<T>();
-            InOrder(_root, list);
+            var list = new List<TValue>();
+            InOrderRec(_root, list);
             return list;
         }
 
-        private void InOrder(BSTreeNode<T> node, List<T> list)
+        private void InOrderRec(BSTNode<TKey, TValue> node, List<TValue> list)
         {
             if (node == null) return;
-            InOrder(node.Left, list);
+            InOrderRec(node.Left, list);
             list.Add(node.Value);
-            InOrder(node.Right, list);
+            InOrderRec(node.Right, list);
         }
     }
 }

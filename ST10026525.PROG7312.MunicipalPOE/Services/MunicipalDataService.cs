@@ -123,7 +123,8 @@ namespace ST10026525.PROG7312.MunicipalPOE.Services
         }
 
         // ================= Part 3: Service Requests =================
-        public BSTree<ServiceRequest> RequestsById { get; } = new();
+        public BSTree<int, ServiceRequest> RequestsById { get; } = new();
+
         public AVLTree<ServiceRequest> RequestsByDate { get; } = new();
         public Graph<ServiceRequest> RequestsGraph { get; } = new();
         public MinHeap<ServiceRequest> PriorityQueue { get; }
@@ -131,6 +132,7 @@ namespace ST10026525.PROG7312.MunicipalPOE.Services
         public Dictionary<string, List<ServiceRequest>> RequestsByCategory { get; } = new();
         public Dictionary<string, List<ServiceRequest>> RequestsByStatus { get; } = new(StringComparer.OrdinalIgnoreCase);
 
+        private int _nextRequestId = 16;
         public MunicipalDataService()
         {
             // Initialize MinHeap with custom comparer
@@ -145,7 +147,11 @@ namespace ST10026525.PROG7312.MunicipalPOE.Services
         {
             lock (_lock)
             {
-                RequestsById.Insert(request.Id, request);
+                // Assign next ID manually (incremental integer)
+                request.myId = _nextRequestId++;
+                request.DateSubmitted = DateTime.Now;
+
+                RequestsById.Insert(request.myId, request);
                 RequestsByDate.Insert(request.DateSubmitted, request);
                 PriorityQueue.Insert(request);
 
@@ -162,15 +168,16 @@ namespace ST10026525.PROG7312.MunicipalPOE.Services
         }
 
         public List<ServiceRequest> GetAllRequests() => RequestsById.InOrderTraversal();
-        public ServiceRequest? SearchById(Guid id) => RequestsById.Search(id);
+        public ServiceRequest? SearchById(int myid) => RequestsById.Search(myid);
+
         public List<ServiceRequest> GetRequestsByDateRange(DateTime start, DateTime end) => RequestsByDate.RangeQuery(start, end);
         public List<ServiceRequest> GetRequestsByCategory(string category) => RequestsByCategory.ContainsKey(category) ? RequestsByCategory[category] : new List<ServiceRequest>();
         public List<ServiceRequest> GetRequestsByStatus(string status) => RequestsByStatus.ContainsKey(status) ? RequestsByStatus[status] : new List<ServiceRequest>();
         public ServiceRequest? GetHighestPriorityRequest() => PriorityQueue.Peek();
 
-        public void UpdateRequestStatus(Guid id, string newStatus)
+        public void UpdateRequestStatus(int myid, string newStatus)
         {
-            var req = SearchById(id);
+            var req = SearchById(myid);
             if (req == null) return;
 
             if (RequestsByStatus.ContainsKey(req.Status))
@@ -190,6 +197,7 @@ namespace ST10026525.PROG7312.MunicipalPOE.Services
             {
                 var req = new ServiceRequest
                 {
+                    myId = i,
                     Title = $"Request {i}",
                     Description = $"This is request number {i}",
                     Category = i % 3 == 0 ? "Plumbing" : i % 3 == 1 ? "Electricity" : "Roads",

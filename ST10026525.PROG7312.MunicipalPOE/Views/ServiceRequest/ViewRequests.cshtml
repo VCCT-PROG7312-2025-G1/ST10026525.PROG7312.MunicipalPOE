@@ -60,14 +60,14 @@
             {
                 <tr>
                     <td>@r.Title</td>
-                    <td>@r.Id</td>
+                    <td>@r.myId</td>
                     <td>@r.Category</td>
                     <td>@r.Status</td>
                     <td>@r.Priority</td>
                     <td>@r.DateSubmitted.ToShortDateString()</td>
                     <td>
                         <form method="post" asp-action="UpdateStatus" style="display:inline;">
-                            <input type="hidden" name="id" value="@r.Id" />
+                            <input type="hidden" name="id" value="@r.myId" />
                             <select name="newStatus" class="form-select form-select-sm">
                                 <option value="Pending" selected="@(r.Status == "Pending" ? "selected" : null)">Pending</option>
                                 <option value="In Progress" selected="@(r.Status == "In Progress" ? "selected" : null)">In Progress</option>

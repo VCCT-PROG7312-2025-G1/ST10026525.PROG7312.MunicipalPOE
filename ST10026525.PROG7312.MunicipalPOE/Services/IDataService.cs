@@ -22,7 +22,8 @@ namespace ST10026525.PROG7312.MunicipalPOE.Services
         List<Event> RecommendEvents();
 
         // Part 3: Service Requests 
-        BSTree<ServiceRequest> RequestsById { get; }
+        BSTree<int, ServiceRequest> RequestsById { get; }
+
         AVLTree<ServiceRequest> RequestsByDate { get; }
         Graph<ServiceRequest> RequestsGraph { get; }
         MinHeap<ServiceRequest> PriorityQueue { get; }
@@ -31,12 +32,12 @@ namespace ST10026525.PROG7312.MunicipalPOE.Services
 
         void AddRequest(ServiceRequest request);
         List<ServiceRequest> GetAllRequests();
-        ServiceRequest? SearchById(Guid id);
+        ServiceRequest? SearchById(int myid);
         List<ServiceRequest> GetRequestsByDateRange(DateTime start, DateTime end);
         List<ServiceRequest> GetRequestsByCategory(string category);
         List<ServiceRequest> GetRequestsByStatus(string status);
         ServiceRequest? GetHighestPriorityRequest();
-        void UpdateRequestStatus(Guid id, string newStatus);
+        void UpdateRequestStatus(int myid, string newStatus);
     }
 }
 
